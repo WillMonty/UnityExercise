@@ -2,4 +2,5 @@
 {
 	Unassigned,
 	React,
+	TippingPoint
 }
