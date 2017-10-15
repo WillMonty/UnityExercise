@@ -34,6 +34,8 @@ public static class SessionUtil
 		{
 			case GameType.React:
 				return XMLUtil.ELEM_REACT;
+			case GameType.TippingPoint:
+				return XMLUtil.ELEM_TIPPINGPOINT;
 
 			default:
 				return string.Empty;

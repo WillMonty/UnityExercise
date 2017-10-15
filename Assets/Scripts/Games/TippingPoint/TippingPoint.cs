@@ -54,7 +54,7 @@ public class TippingPoint: GameBase
 		base.StartSession(sessionFile);
 
 		instructionsText.text = INSTRUCTIONS;
-		gameParent.SetActive(true); //Enable the game so that the elements show up
+		gameParent.SetActive(true); //Enable the game's parent so that the elements show up
 
 		StartCoroutine(RunTrials(SessionData));
 
@@ -92,7 +92,7 @@ public class TippingPoint: GameBase
 		StartInput();
 		stim.SetActive(true);
 
-		yield return new WaitForSeconds(((ReactTrial)t).duration);
+		yield return new WaitForSeconds(((TippingPointData)t).duration);
 		stim.SetActive(false);
 		EndInput();
 

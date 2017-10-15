@@ -27,6 +27,7 @@ public static class XMLUtil
 
 	// Gametype elements.
 	public const string ELEM_REACT = "react";	
+	public const string ELEM_TIPPINGPOINT = "tippingpoint";	
 
 	// General elements.
 	const string ELEM_SESSIONS = "sessions";
@@ -104,6 +105,10 @@ public static class XMLUtil
 
 				case ELEM_REACT:
 					sData.gameData = new ReactData(n as XmlElement);
+					break;
+
+				case ELEM_TIPPINGPOINT:
+					sData.gameData = new TippingPointData(n as XmlElement);
 					break;
 
 				default:
