@@ -18,6 +18,8 @@ public static class SessionUtil
 		{
 			case GameType.React:
 				return new ReactTrial(data, elem);
+			case GameType.TippingPoint:
+				return new TippingPointTrial(data, elem);
 
 			default:
 				return new Trial(data, elem);

@@ -2,7 +2,7 @@
 <session>
   <settings>
     <general gameType="TippingPoint" shuffle="true" />
-    <tippingpoint duration="1" lineX="0" guessTimeLimit="0.125" responseTimeLimit =".8" />
+    <tippingpoint duration="400" lineX="0" xDistance="50" guessTimeLimit="0" responseTimeLimit ="1" />
   </settings>
   <trials>
     <trial delay="0.2" />

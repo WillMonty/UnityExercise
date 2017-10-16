@@ -12,6 +12,8 @@ public class TippingPointData : GameData
 {
 	const string ATTRIBUTE_GUESS_TIMELIMIT = "guessTimeLimit";
 	const string ATTRIBUTE_RESPONSE_TIMELIMIT = "responseTimeLimit";
+	const string ATTRIBUTE_X_DISTANCE = "xDistance";
+	const string ATTRIBUTE_LINE_X = "lineX";
 	public const string ATTRIBUTE_DURATION = "duration";
 
 	/// <summary>
@@ -28,6 +30,14 @@ public class TippingPointData : GameData
 	/// The visibility Duration for the Stimulus.
 	/// </summary>
 	private float duration = 0;
+	/// <summary>
+	/// The distance squares will travel across the screen.
+	/// </summary>
+	private float xDistance = 0;
+	/// <summary>
+	/// The x position of the line that squares will cross. Can increase or decrease difficulty through reaction time.
+	/// </summary>
+	private float lineX = 0;
 
 
 	#region ACCESSORS
@@ -54,6 +64,20 @@ public class TippingPointData : GameData
 		}
 	}
 
+	public float XDistance {
+		get {
+			return xDistance;
+		}
+	}
+	
+	public float LineX {
+		get {
+			return lineX;
+		}
+		set {
+			lineX = value;
+		}
+	}
 	#endregion
 
 
@@ -67,6 +91,8 @@ public class TippingPointData : GameData
 	{
 		base.ParseElement(elem);
 		XMLUtil.ParseAttribute(elem, ATTRIBUTE_DURATION, ref duration);
+		XMLUtil.ParseAttribute(elem, ATTRIBUTE_X_DISTANCE, ref xDistance);
+		XMLUtil.ParseAttribute(elem, ATTRIBUTE_LINE_X, ref lineX);
 		XMLUtil.ParseAttribute(elem, ATTRIBUTE_RESPONSE_TIMELIMIT, ref responseTimeLimit);
 		XMLUtil.ParseAttribute(elem, ATTRIBUTE_GUESS_TIMELIMIT, ref guessTimeLimit);
 	}

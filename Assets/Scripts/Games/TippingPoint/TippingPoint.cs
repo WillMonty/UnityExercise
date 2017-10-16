@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 
 /// <summary>
-/// In TippingPoint, a player must respond to a rectangle crossing a line.
-/// If the player responds before the rectangle crosses the line or after the rectangle has fully crossed they fail the trial.
-/// Each trial has a defined delay as to when the next rectangle will appear as well as a defined time it will take for the rectangle to cross through the line.
+/// In TippingPoint, a player must respond to a squares crossing a line.
+/// If the player responds before the squares crosses the line or after the rectangle has fully crossed they fail the trial.
+/// Each trial has a defined delay as to when the next rectangle will appear as well as a defined time it will take for the squares to cross through the line.
 /// </summary>
 public class TippingPoint: GameBase
 {
@@ -19,6 +19,8 @@ public class TippingPoint: GameBase
 	const string RESPONSE_SLOW = "Too Slow!";
 	Color RESPONSE_COLOR_GOOD = Color.green;
 	Color RESPONSE_COLOR_BAD = Color.red;
+	Vector3 stimStartPoint; //Start point of stimulus squares
+	Vector3 stimEndPoint; //End point of stimulus squares
 
 	/// <summary>
 	/// A reference to the UI canvas so we can instantiate the feedback text.
@@ -56,9 +58,29 @@ public class TippingPoint: GameBase
 		instructionsText.text = INSTRUCTIONS;
 		gameParent.SetActive(true); //Enable the game's parent so that the elements show up
 
+		SetUpTipElements(SessionData);
+
 		StartCoroutine(RunTrials(SessionData));
 
 		return this;
+	}
+
+	private void SetUpTipElements(SessionData data)
+	{
+		TippingPointData tipData =(TippingPointData)data.gameData; //Cast data to TippingPointData to get acess game specific variables
+
+		//Set start and end points for the square to lerp too
+		stimStartPoint = new Vector3(-1 * tipData.XDistance/2.0f, 0.0f, 0.0f);
+		stimEndPoint = new Vector3(tipData.XDistance/2.0f, 0.0f, 0.0f);
+
+		//Check if lineX position is invalid. Can't have squares start in front of it or end behind it.
+		if(tipData.LineX > stimStartPoint.x && tipData.LineX < stimEndPoint.x)
+		{
+			//Valid
+			Vector3 linePos = new Vector3(tipData.LineX, 0.0f, 0.0f);
+			line.GetComponent<RectTransform>().localPosition = linePos;
+		}
+		//If it is invalid don't do anything since line's x position is at 0 anyway
 	}
 
 
@@ -85,15 +107,24 @@ public class TippingPoint: GameBase
 	protected virtual IEnumerator DisplayStimulus(Trial t)
 	{
 		GameObject stim = stimulus;
-		stim.SetActive(false);
+		stim.GetComponent<RectTransform>().localPosition = stimStartPoint; //Reset square position
 
 		yield return new WaitForSeconds(t.delay);
 
-		StartInput();
 		stim.SetActive(true);
+		StartInput();
 
-		yield return new WaitForSeconds(((TippingPointData)t).duration);
-		stim.SetActive(false);
+		//Lerp stimulus across screen
+		float startTime = Time.time;
+		float currTime = startTime;
+		while(currTime-startTime <= ((TippingPointTrial)t).duration)
+		{
+			stim.GetComponent<RectTransform>().localPosition = Vector3.Lerp(stimStartPoint, stimEndPoint, (currTime-startTime)/((TippingPointTrial)t).duration);
+			currTime += Time.deltaTime;
+		}
+
+		GUILog.Log("LERP Done");
+
 		EndInput();
 
 		yield break;
