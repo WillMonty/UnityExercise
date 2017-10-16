@@ -161,6 +161,11 @@ public class TippingPoint: GameBase
 			if (IsGuessResponse(time))
 			{
 				// Responded before the guess limit, aka guessed.
+				//Check if it was also the wrong key.
+				if(IsCorrectKey((TippingPointTrial)t))
+				{
+					r.keyCorrect = true;
+				}
 				DisplayFeedback(RESPONSE_GUESS, RESPONSE_COLOR_BAD);
 				GUILog.Log("Fail! Guess response! responseTime = {0}", time);
 			}
@@ -180,7 +185,7 @@ public class TippingPoint: GameBase
 				{
 					//With wrong key.
 					DisplayFeedback(RESPONSE_KEY, RESPONSE_COLOR_BAD);
-					GUILog.Log("Fail! Wrong Key Pressed! key = {2}", time);
+					GUILog.Log("Fail! Wrong Key Pressed! key pressed = " + keyPressed, time);
 				}
 			}
 			else
