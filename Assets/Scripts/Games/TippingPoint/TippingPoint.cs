@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 
 /// <summary>
-/// In TippingPoint, a player must respond to a squares crossing a line.
-/// If the player responds before the squares crosses the line or after the rectangle has fully crossed they fail the trial.
-/// Each trial has a defined delay as to when the next rectangle will appear as well as a defined time it will take for the squares to cross through the line.
+/// In TippingPoint, a player must respond to squares on either side of a line.
+/// The player responds with a left or right arrow press. Pressing the key that corresponds to the wrong side is a fail.
+/// Each trial has a defined delay as to when the next square will appear as well as a defined side to determine what side it will show up on.
 /// </summary>
 public class TippingPoint: GameBase
 {

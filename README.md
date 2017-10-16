@@ -48,3 +48,27 @@ In this game you should be able to:
 # Submission
 
 For your submission, extend this README documenting the rules of the new game, how the code works, how scoring works in the new game, and any other interesting or useful things you can think of for us to take into consideration. Then zip the git repository and send it to us.
+
+# The Game: Tipping Point by William Montgomery
+Tipping Point is also a quick reaction game, but instead has the player deciding what side of a line the stimulant is on.
+Player's hit the left or right arrow to pick the side as the square appears.
+
+#How It Works
+The code works by using a side attribute that can be chosen in the xml.
+That determines the postion of the square and will also be visible in log files.
+Also a KeyCorrect method was written since multiple keys would now be valid as an answer, but only one was actually correct.
+
+#Things I Would Have Added and Other Notes
+Due to the following: 
+* Midterm Season in full swing
+* A shortened deadline by a week because of another offer I'm considering
+* Not hearing back for a few days about whether or not I could submit some other Unity projects instead of this one
+* Coming down with a cold
+I learned how to use this codebase and wrote this game in less than a day.
+You can view when I forked the original project and when my commits where to see that this is true.
+I would've preferred to not be in that situation since I had other exciting ideas about what to create for this project, but I still at least have something to show.
+Things I would've liked to do:
+* Add the possibilty for stimulant squares to be placed on sides for all arrow keys.
+* Add occasional red squares that would have asked the player to hit the opposite side.
+* Add sounds for correct and incorrect choices.
+I believe I still made a game that perfectly qualifies for all of the requirements above, but I would've liked to do more with more time.
