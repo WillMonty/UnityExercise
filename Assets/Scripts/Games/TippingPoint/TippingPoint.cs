@@ -77,6 +77,7 @@ public class TippingPoint: GameBase
 			yield return StartCoroutine(DisplayStimulus((TippingPointTrial)t));
 			EndTrial(t);
 		}
+		stimulus.SetActive(false); //Make sure to turn off stimulus
 		FinishedSession();
 		yield break;
 	}
@@ -147,7 +148,7 @@ public class TippingPoint: GameBase
 	/// </summary>
 	protected override void AddResult(Trial t, float time)
 	{
-		TrialResult r = new TrialResult(t);
+		TippingPointTrialResult r = new TippingPointTrialResult(t);
 		r.responseTime = time;
 		if (time == 0)
 		{
@@ -171,6 +172,7 @@ public class TippingPoint: GameBase
 					// Responded correctly.
 					DisplayFeedback(RESPONSE_CORRECT, RESPONSE_COLOR_GOOD);
 					r.success = true;
+					r.keyCorrect = true;
 					r.accuracy = GetAccuracy(t, time);
 					GUILog.Log("Success! responseTime = {0}", time);
 				}
