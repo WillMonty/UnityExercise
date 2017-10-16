@@ -14,6 +14,7 @@ public class TippingPointTrial : Trial
 	/// The distance ratio that will be targeted.
 	/// </summary>
 	public float duration = 0;
+	public string side = "l"; //Left side by default if it doesn't parse correctly
 
 
 	#region ACCESSORS
@@ -26,6 +27,14 @@ public class TippingPointTrial : Trial
 		}
 	}
 
+	public string Side {
+		get {
+			return side;
+		}
+		set {
+			side = value;
+		}
+	}
 	#endregion
 
 
@@ -49,6 +58,8 @@ public class TippingPointTrial : Trial
 		{
 			duration = data.GeneratedDuration;
 		}
+
+		XMLUtil.ParseAttribute(n, TippingPointData.ATTRIBUTE_SIDE, ref side);
 	}
 
 
@@ -58,6 +69,6 @@ public class TippingPointTrial : Trial
 	public override void WriteOutputData(ref XElement elem)
 	{
 		base.WriteOutputData(ref elem);
-		XMLUtil.CreateAttribute(TippingPointData.ATTRIBUTE_DURATION, duration.ToString(), ref elem);
+		XMLUtil.CreateAttribute(TippingPointData.ATTRIBUTE_SIDE, duration.ToString(), ref elem);
 	}
 }

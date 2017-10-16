@@ -63,9 +63,14 @@ public class InputController : MonoBehaviour
 	/// </summary>
 	void CheckForInput()
 	{
-		if (Input.GetKeyDown(KeyCode.Space))
+		if (Input.GetKeyDown(KeyCode.LeftArrow))
 		{
-			activeGame.PlayerResponded(KeyCode.Space, CalculateInputTime(ticksStarted, DateTime.UtcNow.Ticks));
+			activeGame.PlayerResponded(KeyCode.LeftArrow, CalculateInputTime(ticksStarted, DateTime.UtcNow.Ticks));
+		}
+
+		if (Input.GetKeyDown(KeyCode.RightArrow))
+		{
+			activeGame.PlayerResponded(KeyCode.RightArrow, CalculateInputTime(ticksStarted, DateTime.UtcNow.Ticks));
 		}
 	}
 

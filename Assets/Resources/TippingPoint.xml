@@ -2,17 +2,17 @@
 <session>
   <settings>
     <general gameType="TippingPoint" shuffle="true" />
-    <tippingpoint duration="400" lineX="0" xDistance="50" guessTimeLimit="0" responseTimeLimit ="1" />
+    <tippingpoint duration="1" guessTimeLimit="0" responseTimeLimit="1" />
   </settings>
   <trials>
-    <trial delay="0.2" />
-    <trial delay="0.3" />
-    <trial delay="0.3" />
-    <trial delay="0.5" />
-    <trial delay="0.5" />
-    <trial delay="0.5" />
-    <trial delay="1.0" />
-    <trial delay="1.0" />
-    <trial delay="1.0" />
+    <trial delay="0.2" side="l" />
+    <trial delay="0.3" side="r"/>
+    <trial delay="0.3" side="l"/>
+    <trial delay="0.5" side="l"/>
+    <trial delay="0.5" side="r"/>
+    <trial delay="0.5" side="l"/>
+    <trial delay="1.0" side="r"/>
+    <trial delay="1.0" side="r"/>
+    <trial delay="1.0" side="r"/>
   </trials>
 </session>

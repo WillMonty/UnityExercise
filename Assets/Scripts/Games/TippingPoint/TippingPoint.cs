@@ -11,16 +11,18 @@ using System.Collections.Generic;
 /// </summary>
 public class TippingPoint: GameBase
 {
-	const string INSTRUCTIONS = "Press <color=cyan>Spacebar</color> as soon as the square starts crossing the line.";
+	const string INSTRUCTIONS = "Press <color=cyan>Left Arrow</color> or <color=cyan>Right Arrow</color> as soon as the square appears in the appropriate side.";
 	const string FINISHED = "FINISHED!";
 	const string RESPONSE_GUESS = "No Guessing!";
 	const string RESPONSE_CORRECT = "Good!";
 	const string RESPONSE_TIMEOUT = "Missed it!";
 	const string RESPONSE_SLOW = "Too Slow!";
+	const string RESPONSE_KEY = "Wrong Key!";
 	Color RESPONSE_COLOR_GOOD = Color.green;
 	Color RESPONSE_COLOR_BAD = Color.red;
-	Vector3 stimStartPoint; //Start point of stimulus squares
-	Vector3 stimEndPoint; //End point of stimulus squares
+	Vector3 leftPosition = new Vector3(-70.0f, 0.0f, 0.0f);
+	Vector3 rightPosition = new Vector3(70.0f, 0.0f, 0.0f);
+	KeyCode keyPressed; //Would have implemented this as a parameter into one of the AddResult methods with more time. Added here as to not break the Addresult(Trial, float) override.
 
 	/// <summary>
 	/// A reference to the UI canvas so we can instantiate the feedback text.
@@ -58,29 +60,9 @@ public class TippingPoint: GameBase
 		instructionsText.text = INSTRUCTIONS;
 		gameParent.SetActive(true); //Enable the game's parent so that the elements show up
 
-		SetUpTipElements(SessionData);
-
 		StartCoroutine(RunTrials(SessionData));
 
 		return this;
-	}
-
-	private void SetUpTipElements(SessionData data)
-	{
-		TippingPointData tipData =(TippingPointData)data.gameData; //Cast data to TippingPointData to get acess game specific variables
-
-		//Set start and end points for the square to lerp too
-		stimStartPoint = new Vector3(-1 * tipData.XDistance/2.0f, 0.0f, 0.0f);
-		stimEndPoint = new Vector3(tipData.XDistance/2.0f, 0.0f, 0.0f);
-
-		//Check if lineX position is invalid. Can't have squares start in front of it or end behind it.
-		if(tipData.LineX > stimStartPoint.x && tipData.LineX < stimEndPoint.x)
-		{
-			//Valid
-			Vector3 linePos = new Vector3(tipData.LineX, 0.0f, 0.0f);
-			line.GetComponent<RectTransform>().localPosition = linePos;
-		}
-		//If it is invalid don't do anything since line's x position is at 0 anyway
 	}
 
 
@@ -92,7 +74,7 @@ public class TippingPoint: GameBase
 		foreach (Trial t in data.trials)
 		{
 			StartTrial(t);
-			yield return StartCoroutine(DisplayStimulus(t));
+			yield return StartCoroutine(DisplayStimulus((TippingPointTrial)t));
 			EndTrial(t);
 		}
 		FinishedSession();
@@ -101,29 +83,30 @@ public class TippingPoint: GameBase
 
 
 	/// <summary>
-	/// Displays the Stimulus for a specified duration.
+	/// Displays the Stimulus on the left or right of a line for a specified duration.
 	/// During that duration the player needs to respond as quickly as possible.
 	/// </summary>
-	protected virtual IEnumerator DisplayStimulus(Trial t)
+	protected virtual IEnumerator DisplayStimulus(TippingPointTrial t)
 	{
 		GameObject stim = stimulus;
-		stim.GetComponent<RectTransform>().localPosition = stimStartPoint; //Reset square position
+		stim.SetActive(false);
+
+		//Left position
+		if(t.side == "l")
+		{
+			stim.GetComponent<RectTransform>().localPosition = leftPosition;
+		}
+		else //Right position
+		{
+			stim.GetComponent<RectTransform>().localPosition = rightPosition;
+		}
 
 		yield return new WaitForSeconds(t.delay);
 
-		stim.SetActive(true);
 		StartInput();
+		stim.SetActive(true);
 
-		//Lerp stimulus across screen
-		float startTime = Time.time;
-		float currTime = startTime;
-		while(currTime-startTime <= ((TippingPointTrial)t).duration)
-		{
-			stim.GetComponent<RectTransform>().localPosition = Vector3.Lerp(stimStartPoint, stimEndPoint, (currTime-startTime)/((TippingPointTrial)t).duration);
-			currTime += Time.deltaTime;
-		}
-
-		GUILog.Log("LERP Done");
+		yield return new WaitForSeconds(t.duration);
 
 		EndInput();
 
@@ -153,11 +136,9 @@ public class TippingPoint: GameBase
 			return;
 		}
 		base.PlayerResponded(key, time);
-		if (key == KeyCode.Space)
-		{
-			EndInput();
-			AddResult(CurrentTrial, time);
-		}
+		EndInput();
+		keyPressed = key;
+		AddResult(CurrentTrial, time);
 	}
 
 
@@ -184,11 +165,21 @@ public class TippingPoint: GameBase
 			}
 			else if (IsValidResponse(time))
 			{
-				// Responded correctly.
-				DisplayFeedback(RESPONSE_CORRECT, RESPONSE_COLOR_GOOD);
-				r.success = true;
-				r.accuracy = GetAccuracy(t, time);
-				GUILog.Log("Success! responseTime = {0}", time);
+				//Check if correct key was pressed
+				if(IsCorrectKey((TippingPointTrial)t))
+				{
+					// Responded correctly.
+					DisplayFeedback(RESPONSE_CORRECT, RESPONSE_COLOR_GOOD);
+					r.success = true;
+					r.accuracy = GetAccuracy(t, time);
+					GUILog.Log("Success! responseTime = {0}", time);
+				}
+				else
+				{
+					//With wrong key.
+					DisplayFeedback(RESPONSE_KEY, RESPONSE_COLOR_BAD);
+					GUILog.Log("Fail! Wrong Key Pressed! key = {2}", time);
+				}
 			}
 			else
 			{
@@ -249,5 +240,21 @@ public class TippingPoint: GameBase
 	{
 		TippingPointData data = sessionData.gameData as TippingPointData;
 		return data.ResponseTimeLimit <= 0 || time < data.ResponseTimeLimit;
+	}
+
+	protected bool IsCorrectKey(TippingPointTrial t)
+	{
+		//Check if proper arrow was hit with proper side
+		if(t.side == "l" && keyPressed == KeyCode.LeftArrow)
+		{
+			return true;
+		}
+		
+		if(t.side == "r" && keyPressed == KeyCode.RightArrow)
+		{
+			return true;
+		}
+
+		return false;
 	}
 }
